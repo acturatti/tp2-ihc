@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Interação Homem-Computador</string>
+    <string name="number1">Primeiro Número</string>
+    <string name="number2">Segundo Número</string>
+    <string name="sum">Somar</string>
+</resources>
