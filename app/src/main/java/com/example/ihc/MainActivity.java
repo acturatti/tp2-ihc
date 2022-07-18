@@ -1,5 +1,4 @@
 package com.example.ihc;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,15 +8,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements SensorEventListener {
-    private TextView view_x, view_y, view_z;
-    private float x, y, z, last_x, last_y, last_z;
     private SensorManager sensorManager;
-    private Sensor accelerometer;
+    private TextView view_x, view_y, view_z, view_light, view_temperature;
+    private float x, y, z, last_x, last_y, last_z;
+    private Sensor accelerometer, light_sensor, thermometer;
+    private Button getGPSBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +29,18 @@ public class MainActivity extends Activity implements SensorEventListener {
         view_x = (TextView) findViewById(R.id.view_x);
         view_y = (TextView) findViewById(R.id.view_y);
         view_z = (TextView) findViewById(R.id.view_z);
+        view_light = (TextView) findViewById(R.id.view_light);
+        view_temperature = (TextView) findViewById(R.id.view_temperature);
 
         if ((accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) != null){
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
-
-
-        // The activity is created
+        if ((light_sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)) != null){
+            sensorManager.registerListener(this, light_sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if ((thermometer = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)) != null){
+            sensorManager.registerListener(this, thermometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -47,11 +52,15 @@ public class MainActivity extends Activity implements SensorEventListener {
             z = event.values[2];
 
             if(Math.abs(x - last_x) > 2 || Math.abs(x - last_x) > 2 || Math.abs(x - last_x) > 2){
-                Send();
+                // Send();
             }
-                view_x.setText("X: " + x);
-                view_y.setText("Y: " + y);
-                view_z.setText("Z: " + z);
+            view_x.setText("X: " + x);
+            view_y.setText("Y: " + y);
+            view_z.setText("Z: " + z);
+        } else if (sensor.getType() == Sensor.TYPE_LIGHT) {
+            view_light.setText("Iluminação: " + event.values[0]);
+        } else if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            view_temperature.setText("Temperatura: " + event.values[0] + " ºC");
         }
     }
 
@@ -67,4 +76,3 @@ public class MainActivity extends Activity implements SensorEventListener {
         startActivity(i);
     }
 }
-
